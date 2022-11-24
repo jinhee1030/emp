@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.emp2.mapper.Dept2Mapper">
+
+	<!-- 부서 정보 전체 조회 -->
+	<select id="selectDept2" resultType="map">
+		SELECT
+			d.deptno,
+			d.dname,
+			d.loc,
+			count(if(e.is_use=1, e.is_use, null)) AS is_use
+		FROM dept2 AS d
+		LEFT JOIN emp AS e
+		ON d.deptno = e.deptno
+		GROUP BY d.deptno
+		ORDER BY d.deptno
+	</select>
+	
+
+	<!-- 부서 추가 동적 쿼리 -->
+	<insert id="insertDept2">
+		INSERT INTO dept2
+		(
+			deptno
+			,dname
+			,loc
+		)
+		VALUES
+		(
+			#{deptno}
+			<if test="dname != null">
+				,#{dname}
+			</if>
+			<if test="dname != null">
+				,#{loc}
+			</if>
+		)
+	</insert>
+	<!-- 부서번호 중복체크 -->
+	<select id="selectCountByDeptNo2" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM dept2
+		WHERE deptno = #{deptno}
+	</select>
+
+	<!-- 특정 부서 조회 -->
+	<select id="selectDeptByDeptno2" resultType="DeptVO">
+		SELECT
+			deptno,
+			dname,
+			loc
+		FROM dept2
+		WHERE deptno = #{deptno}
+	</select>
+
+	<!-- 특정 부서 정보 수정 -->
+	<update id="updateDept2">
+		UPDATE dept2
+		SET
+			dname = #{dname},
+			loc = #{loc}
+		WHERE deptno = #{deptno}
+	</update>
+	
+	<!-- 특정 부서 삭제(set null) -->
+	<delete id="deleteDept2">
+		DELETE
+		FROM dept2
+		WHERE deptno = #{deptno}
+	</delete>
+
+</mapper>
